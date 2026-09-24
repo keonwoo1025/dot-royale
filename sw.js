@@ -1,5 +1,5 @@
 // 도트 로얄 오프라인 캐시. 게임을 고치면 VERSION 숫자를 올려 주세요.
-const VERSION='dotroyale-v4-1';
+const VERSION='dotroyale-v4-2';
 const FILES=[
   './',
   'index.html',
@@ -66,7 +66,7 @@ const FILES=[
   'assets/city/watertower.gltf'
 ];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(VERSION).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('dotroyale-')&&k!==VERSION).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{
   if(e.request.method!=='GET')return;
   e.respondWith(caches.match(e.request).then(hit=>hit||fetch(e.request).then(res=>{
