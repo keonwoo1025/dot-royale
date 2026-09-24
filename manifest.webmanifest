@@ -1,0 +1,15 @@
+{
+  "name": "도트 로얄",
+  "short_name": "도트 로얄",
+  "description": "25명 배틀로얄",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#2a1f55",
+  "theme_color": "#2a1f55",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
