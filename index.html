@@ -27,6 +27,9 @@ body{font-family:'Jua',system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-seri
 canvas#c3d{position:fixed;inset:0;width:100%;height:100%;display:block}
 #touch{position:fixed;inset:0;z-index:1}
 #tint{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;background:radial-gradient(ellipse at center,rgba(60,90,255,0) 40%,rgba(60,90,255,.45));transition:opacity .4s}
+#skillFx{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .2s}
+#skill.ready{animation:rdy 1.2s infinite}
+@keyframes rdy{0%,100%{box-shadow:0 4px 0 var(--edge),0 0 0 0 rgba(255,255,255,.7)}50%{box-shadow:0 4px 0 var(--edge),0 0 0 7px rgba(255,255,255,0)}}
 #hurt{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;box-shadow:inset 0 0 110px 36px rgba(255,40,40,.7);transition:opacity .25s}
 button{font-family:inherit;color:var(--ink);background:var(--panel-2);border:3px solid var(--edge);border-radius:12px;box-shadow:0 4px 0 var(--edge);cursor:pointer;touch-action:none;padding:0}
 button:active{transform:translateY(2px);box-shadow:0 2px 0 var(--edge)}
@@ -131,6 +134,7 @@ button img{pointer-events:none}
 <div id="touch"></div>
 <div id="tint"></div>
 <div id="hurt"></div>
+<div id="skillFx"></div>
 <div id="nums"></div>
 
 <div id="hud" hidden>

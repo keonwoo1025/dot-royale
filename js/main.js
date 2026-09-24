@@ -1,6 +1,6 @@
 import * as L from './logic.js';
 import * as V from './view.js';
-import {iconURL,buildMapBg,drawMini,drawBigMap} from './art2d.js';
+import {iconURL,buildMapBg,drawMini,drawBigMap,ICON3D} from './art2d.js';
 const {S,CHARS,CHK,WD,FAM,FAMN,AMMO,HEAL,MODCD,HELM,VEST,BAGCAP,hyp,clamp,angDiff,TAU}=L;
 const $=s=>document.querySelector(s),$$=s=>document.querySelectorAll(s);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -15,10 +15,13 @@ window.__DR={S,L,V};
 (async()=>{
   try{await V.initView($('#c3d'),p=>{$('#lbar i').style.width=Math.round(p*100)+'%'})}
   catch(e){$('#ltxt').textContent='불러오기에 실패했습니다. 새로고침해 주세요';console.error(e);return}
-  V.setQuality(quality);buildLobby();showLobby();requestAnimationFrame(loop);
+  V.setQuality(quality);$('#ltxt').textContent='아이콘 만드는 중';await new Promise(r=>setTimeout(r,30));V.makeIcons(ICON3D);buildLobby();showLobby();requestAnimationFrame(loop);
   if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
 })();
 
+/* ================= 가로 고정 (안드로이드) ================= */
+async function goLandscape(){try{const d=document.documentElement;if(!document.fullscreenElement&&d.requestFullscreen)await d.requestFullscreen({navigationUI:'hide'});if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape')}catch(e){}}
+addEventListener('pointerdown',()=>{if(!document.fullscreenElement)goLandscape()},{capture:true});
 /* ================= 로비 ================= */
 function buildLobby(){const box=$('#chars');box.innerHTML='';
   for(const k of CHK){const C=CHARS[k],b=document.createElement('button');b.className='cbtn o';b.dataset.ch=k;b.style.background=C.c2;b.textContent=C.n;
@@ -30,7 +33,7 @@ function renderDetail(){for(const b of $$('.cbtn'))b.classList.toggle('on',b.dat
    <div class="var">${['near','mid','far'].map(f=>`<b>${FAMN[f]} · ${C.act[f].n}</b><span>${C.act[f].d}</span>`).join('')}</div></div>`;
   const b=load('dr-best',null);$('#best').textContent=b?`최고 ${b.rank}위 · 최다 처치 ${b.kills}`:''}
 function showLobby(){state='lobby';for(const s of['#loading','#match','#over','#hud','#settings'])$(s).hidden=true;$('#lobby').hidden=false;$('#tint').style.opacity=0;renderDetail()}
-$('#bPlay').addEventListener('click',()=>{resumeAudio();startMatching()});
+$('#bPlay').addEventListener('click',()=>{resumeAudio();goLandscape();startMatching()});
 $('#bSettings').addEventListener('click',()=>{$('#settings').hidden=false;syncSettings()});
 $('#setClose').addEventListener('click',()=>$('#settings').hidden=true);
 function syncSettings(){$$('#settings [data-q]').forEach(b=>b.classList.toggle('on',b.dataset.q===quality));$$('#settings [data-s]').forEach(b=>b.classList.toggle('on',(b.dataset.s==='off')===muted))}
@@ -105,7 +108,7 @@ function humanInput(dt){
   ctl.pend={};return inp}
 
 /* ================= 루프 ================= */
-let last=performance.now(),hurtFade=0;
+let last=performance.now(),hurtFade=0,skillFxT=0;
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
   if(state==='play'||state==='over'){
     if(S.me){const inp=state==='play'&&S.me.alive?humanInput(dt):{mx:0,my:0,aim:S.me.ang,fire:false};L.step(dt,inp);
@@ -117,7 +120,8 @@ function handleEvents(evs){for(const e of evs){switch(e.t){
   case 'hurt':$('#hurt').style.opacity=e.zone?.35:.7;hurtFade=.25;break;
   case 'num':addNum(e.x,e.y,e.v);sfxBeep(900,.03,.05);break;
   case 'shot':sfxShot(e.k,e.x,e.y);break;
-  case 'skill':sfxSkill(e.p);break;
+  case 'skill':sfxSkill(e.p);if(e.p===S.me){const f=L.famOf(S.me);toast(CHARS[S.me.ch].act[f].n+' 발동!');$('#skillFx').style.boxShadow='inset 0 0 90px 22px '+CHARS[S.me.ch].c;$('#skillFx').style.opacity=1;skillFxT=.5}break;
+  case 'stun':if(e.p===S.me)toast('기절!');break;
   case 'jump':sfxPlane(false);sfxBeep(300,.2,.06);break;
   case 'land':sfxBeep(160,.12,.1);break;
   case 'die':if(e.p===S.me){sfxBeep(160,.3,.12);$('#inv').hidden=true}break;
@@ -129,11 +133,13 @@ let feedDirty=true,hudT=0,toastT=0,invSig='';const cache=new Map();
 function setT(el,s){if(cache.get(el)!==s){cache.set(el,s);el.textContent=s}}
 function setSrc(img,key){if(img.dataset.k!==key){img.dataset.k=key;img.src=key?iconURL(key):'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='}}
 function toast(s){const t=$('#toast');t.textContent=s;t.style.opacity=1;toastT=1.8}
+const C0=p=>CHARS[p.ch].c;
 const fmt=s=>{s=Math.max(0,Math.ceil(s));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 const hpI=$('#hp i'),boI=$('#boost i'),prog=$('#prog'),slotEls=[...$$('.slot')],qbEls=[...$$('.qb[data-h]')],skillEl=$('#skill'),ctxEl=$('#ctxBtn');
 function updHud(dt){const me=S.me,z=S.zone;
   if(toastT>0){toastT-=dt;if(toastT<=0)$('#toast').style.opacity=0}
   if(hurtFade>0){hurtFade-=dt;if(hurtFade<=0)$('#hurt').style.opacity=0}
+  {const B=me.buff,act=Math.max(B.tight||0,B.steady||0,B.over||0,me.ch==='chrono'?B.haste||0:0);if(skillFxT>0)skillFxT-=dt;$('#skillFx').style.opacity=skillFxT>0?1:act>0?.55:0;if(act>0&&skillFxT<=0)$('#skillFx').style.boxShadow='inset 0 0 70px 14px '+C0(me)}
   hpI.style.width=Math.max(0,me.hp)+'%';hpI.style.background=me.hp>35?'var(--green)':'var(--red)';boI.style.width=me.boost+'%';
   const C=CHARS[me.ch],f=L.famOf(me),pct=me.skillCD>0?me.skillCD/MODCD[me.mod]*100:0;
   skillEl.querySelector('.cd').style.background=pct>0?`conic-gradient(rgba(27,19,48,.72) ${pct}%, transparent 0)`:'none';
@@ -143,7 +149,7 @@ function updHud(dt){const me=S.me,z=S.zone;
   for(const el of['#skill','#fireBtn','#bReload','#slots','#tr2'])$(el).style.visibility=air?'hidden':'visible';
   setT($('#hpTxt'),String(Math.ceil(Math.max(0,me.hp))));setT($('#alive'),String(S.aliveN));setT($('#kills'),String(me.kills));
   const zi=$('#zoneInfo');let zt=z.state==='wait'?'자기장 축소까지 '+fmt(z.t):z.state==='shrink'?'자기장 축소 중 '+fmt(z.t):'최종 자기장';if(outside)zt='자기장 밖! 안으로 이동';zi.classList.toggle('warn',outside);setT(zi,zt);
-  skillEl.style.background=C.c;skillEl.classList.toggle('lock',!f);setT(skillEl.querySelector('span'),f?C.act[f].n:C.act.n);setT(skillEl.querySelector('small'),f?(me.skillCD>0?Math.ceil(me.skillCD)+'초':'모듈 Lv'+me.mod):'무기 필요');
+  skillEl.style.background=C.c;skillEl.classList.toggle('lock',!f);setT(skillEl.querySelector('span'),f?C.act[f].n:C.act.n);{const B=me.buff,act=Math.max(B.tight||0,B.steady||0,B.over||0);setT(skillEl.querySelector('small'),!f?'무기 필요':act>0?'발동 '+act.toFixed(1)+'초':B.sure>0?'장전됨':me.skillCD>0?Math.ceil(me.skillCD)+'초':'준비 · Lv'+me.mod);skillEl.classList.toggle('ready',!!f&&me.skillCD<=0)}
   for(const el of slotEls){const s=+el.dataset.s,nm=el.querySelector('.nm'),am=el.querySelector('.am'),img=el.querySelector('img');el.classList.toggle('on',me.cur===s);
     if(s===2){setT(nm,'주먹');setT(am,'');setSrc(img,'');continue}
     const w=me.w[s];el.classList.toggle('empty',!w);if(w){setT(nm,WD[w.k].n);setT(am,WD[w.k].special?String(w.mag):w.mag+'/'+me.ammo[WD[w.k].ak]);setSrc(img,'w_'+w.k)}else{setT(nm,'빈 슬롯');setT(am,'');setSrc(img,'')}}

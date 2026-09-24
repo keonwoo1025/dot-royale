@@ -1,4 +1,4 @@
-import {S,W,TS,TN,G,DG,SA,WA,RO,FL,TAU,hash2,WD,AMMO,LVC,RARC,hyp} from './logic.js';
+import {S,W,TS,TN,G,DG,SA,WA,RO,FL,FA,RK,BR,TAU,hash2,WD,AMMO,LVC,RARC,hyp} from './logic.js';
 export const OUT='#1b1330';
 export function mk(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c}
 export function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
@@ -29,7 +29,8 @@ export function drawIcon(g,key){g.lineJoin='round';g.lineWidth=1.6;g.strokeStyle
     rr(g,11,10,10,10,2);f('#c9a8ff');g.fillStyle=OUT;for(let i=0;i<lv;i++){g.beginPath();g.arc(12+i*4,25,1.5,0,TAU);g.fill()}return}}
 const ICON={},URL_={};
 export function iconCanvas(key,px=128){const k=key+'@'+px;let c=ICON[k];if(!c){c=mk(px,px);const g=c.getContext('2d');g.scale(px/32,px/32);drawIcon(g,key);ICON[k]=c}return c}
-export function iconURL(key){if(!URL_[key])URL_[key]=iconCanvas(key,64).toDataURL();return URL_[key]}
+export const ICON3D={};
+export function iconURL(key){if(ICON3D[key])return ICON3D[key];if(!URL_[key])URL_[key]=iconCanvas(key,64).toDataURL();return URL_[key]}
 
 /* ---------- 지형 청크 텍스처 ---------- */
 export const CH=200;
@@ -37,34 +38,51 @@ export function paintChunk(ix,iy,px){
   const cv=mk(px,px),g=cv.getContext('2d'),R=px/CH,ox=ix*CH,oy=iy*CH,type=S.type;
   g.setTransform(R,0,0,R,-ox*R,-oy*R);
   g.fillStyle='#6fcd46';g.fillRect(ox,oy,CH,CH);
+  // 잔디 얼룩
+  for(let yy=oy;yy<oy+CH;yy+=10)for(let xx=ox;xx<ox+CH;xx+=10){const h=hash2(xx*7+3,yy*5+1);if(h<.35){g.fillStyle=h<.17?'rgba(120,210,80,.55)':'rgba(80,170,55,.45)';g.beginPath();g.arc(xx+h*20,yy+h*13,5+h*14,0,TAU);g.fill()}}
   const c0=Math.max(0,Math.floor(ox/TS)-3),c1=Math.min(TN-1,Math.floor((ox+CH)/TS)+3),r0=Math.max(0,Math.floor(oy/TS)-3),r1=Math.min(TN-1,Math.floor((oy+CH)/TS)+3);
-  const P={dg:new Path2D(),se:new Path2D(),s:new Path2D(),wd:new Path2D(),we:new Path2D(),w:new Path2D(),re:new Path2D(),r:new Path2D()};
+  const P={dg:new Path2D(),rke:new Path2D(),rk:new Path2D(),se:new Path2D(),s:new Path2D(),w:new Path2D(),re:new Path2D(),r:new Path2D(),fa:new Path2D(),br:new Path2D()};
   for(let ty=r0;ty<=r1;ty++)for(let tx=c0;tx<=c1;tx++){const t=type[ty*TN+tx],x=tx*TS+2,y=ty*TS+2;
     if(t===DG)circ(P.dg,x,y,3.9);
-    if(t===SA||t===WA){circ(P.se,x,y,4.8);circ(P.s,x,y,4.1)}
-    if(t===WA){circ(P.we,x,y,3.7);circ(P.w,x,y,3.0);
-      let deep=true;for(let k=-3;k<=3&&deep;k++)for(let j=-3;j<=3;j++){const tt=type[clampi(ty+k)*TN+clampi(tx+j)];if(tt!==WA){deep=false;break}}if(deep)circ(P.wd,x,y,3.4)}
-    if(t===RO){circ(P.re,x,y,4.3);circ(P.r,x,y,3.5)}}
-  g.fillStyle='#5fbb3c';g.fill(P.dg);g.fillStyle='#d6b76a';g.fill(P.se);g.fillStyle='#f3df9c';g.fill(P.s);
-  g.fillStyle='#2a95c9';g.fill(P.we);g.fillStyle='#46c4ee';g.fill(P.w);g.fillStyle='#34a9dc';g.fill(P.wd);
-  g.fillStyle='#bba27a';g.fill(P.re);g.fillStyle='#d9c69d';g.fill(P.r);
+    if(t===RK){circ(P.rke,x,y,4.4);circ(P.rk,x,y,3.8)}
+    if(t===SA||t===WA||t===BR){circ(P.se,x,y,4.8);circ(P.s,x,y,4.1)}
+    if(t===WA)circ(P.w,x,y,3.3);
+    if(t===RO){circ(P.re,x,y,4.5);circ(P.r,x,y,3.7)}
+    if(t===BR)circ(P.br,x,y,3.6);
+    if(t===FA)P.fa.rect(tx*TS,ty*TS,TS,TS)}
+  g.fillStyle='#5cb83a';g.fill(P.dg);g.fillStyle='#9a9a86';g.fill(P.rke);g.fillStyle='#b5b39d';g.fill(P.rk);
+  g.fillStyle='#d6b76a';g.fill(P.se);g.fillStyle='#f3df9c';g.fill(P.s);
+  g.fillStyle='#8a6a3e';g.fill(P.fa);
+  g.fillStyle='#d8d5c8';g.fill(P.re);g.fillStyle='#5b5f68';g.fill(P.r);
+  g.fillStyle='#a8743c';g.fill(P.br);
+  // 밭 고랑
+  for(const f of S.fields){if(f.x>ox+CH||f.x+f.w<ox||f.y>oy+CH||f.y+f.h<oy)continue;g.save();g.beginPath();g.rect(f.x,f.y,f.w,f.h);g.clip();
+    for(let k=0;k<(f.hz?f.h:f.w);k+=6){g.fillStyle=f.c?'#e6c64a':'#7fcf4a';if(f.hz)g.fillRect(f.x,f.y+k+1,f.w,3);else g.fillRect(f.x+k+1,f.y,3,f.h)}g.restore()}
+  // 다리 판자
+  g.strokeStyle='rgba(60,35,15,.55)';g.lineWidth=.5;for(let ty=r0;ty<=r1;ty++)for(let tx=c0;tx<=c1;tx++)if(type[ty*TN+tx]===BR){g.beginPath();g.moveTo(tx*TS,ty*TS+2);g.lineTo(tx*TS+4,ty*TS+2);g.stroke()}
+  // 도로 중앙선
+  g.strokeStyle='#ffd34d';g.lineWidth=1.1;g.setLineDash([6,6]);for(const r of S.roads){g.beginPath();for(let i=0;i<=80;i++){const t=i/80,u=1-t,x=u*u*r.a.x+2*u*t*r.mx+t*t*r.b.x,y=u*u*r.a.y+2*u*t*r.my+t*t*r.b.y;i?g.lineTo(x,y):g.moveTo(x,y)}g.stroke()}g.setLineDash([]);
   for(let ty=r0+3;ty<=r1-3;ty++)for(let tx=c0+3;tx<=c1-3;tx++){const t=type[ty*TN+tx],h=hash2(tx,ty),x=tx*TS+2,y=ty*TS+2;
-    if((t===G||t===DG)&&h<.08){g.strokeStyle=t===G?'#5ea83e':'#57a038';g.lineWidth=.6;g.lineCap='round';g.beginPath();g.moveTo(x-1.4,y-1.4);g.lineTo(x,y+.5);g.lineTo(x+1.4,y-1.4);g.stroke()}
-    else if(t===G&&h<.092){g.fillStyle=['#fff3a8','#ff9ec4','#ffffff','#c9a2ff'][(h*1000|0)%4];g.beginPath();g.arc(x,y,.8,0,TAU);g.fill()}
-    else if(t===WA&&h<.025){g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=.5;g.beginPath();g.moveTo(x-2,y);g.lineTo(x+2,y);g.stroke()}
-    else if(t===RO&&h<.06){g.fillStyle='#a88f66';g.beginPath();g.arc(x,y,.6,0,TAU);g.fill()}}
+    if((t===G||t===DG)&&h<.1){g.strokeStyle=t===G?'#58a83a':'#4c9a33';g.lineWidth=.6;g.lineCap='round';g.beginPath();g.moveTo(x-1.4,y-1.4);g.lineTo(x,y+.5);g.lineTo(x+1.4,y-1.4);g.stroke()}
+    else if(t===G&&h<.115){g.fillStyle=['#fff3a8','#ff9ec4','#ffffff','#c9a2ff'][(h*1000|0)%4];g.beginPath();g.arc(x,y,.9,0,TAU);g.fill()}
+    else if(t===RK&&h<.12){g.fillStyle=h<.06?'#8d8a78':'#cfccb8';g.beginPath();g.arc(x,y,.8+h*6,0,TAU);g.fill()}
+    else if(t===SA&&h<.04){g.fillStyle='#e2c77e';g.beginPath();g.arc(x,y,.6,0,TAU);g.fill()}}
   for(const b of S.buildings){if(b.x>ox+CH||b.x+b.w<ox||b.y>oy+CH||b.y+b.h<oy)continue;
+    if(b.kind==='warehouse'){g.fillStyle='#a3a7ad';g.fillRect(b.x,b.y,b.w,b.h);g.strokeStyle='#8b9097';g.lineWidth=.6;for(let yy=b.y+10;yy<b.y+b.h;yy+=10){g.beginPath();g.moveTo(b.x,yy);g.lineTo(b.x+b.w,yy);g.stroke()}for(let xx=b.x+10;xx<b.x+b.w;xx+=10){g.beginPath();g.moveTo(xx,b.y);g.lineTo(xx,b.y+b.h);g.stroke()}continue}
     g.fillStyle='#d9b684';g.fillRect(b.x,b.y,b.w,b.h);g.strokeStyle='#c49f6c';g.lineWidth=.5;
     for(let yy=b.y+5;yy<b.y+b.h;yy+=5){g.beginPath();g.moveTo(b.x,yy);g.lineTo(b.x+b.w,yy);g.stroke()}
-    for(let yy=b.y;yy<b.y+b.h;yy+=5){const off=((yy/5|0)%3)*9;for(let xx=b.x+off;xx<b.x+b.w;xx+=27){g.beginPath();g.moveTo(xx,yy);g.lineTo(xx,yy+5);g.stroke()}}}
+    for(let yy=b.y;yy<b.y+b.h;yy+=5){const off=((yy/5|0)%3)*9;for(let xx=b.x+off;xx<b.x+b.w;xx+=27){g.beginPath();g.moveTo(xx,yy);g.lineTo(xx,yy+5);g.stroke()}}
+    g.fillStyle='rgba(180,70,70,.55)';g.fillRect(b.x+b.w*.3,b.y+b.h*.35,b.w*.4,b.h*.3)}
   for(const p of S.props)if(p.big){if(p.x+p.sw<ox||p.x-p.sw>ox+CH||p.y+p.sd<oy||p.y-p.sd>oy+CH)continue;g.fillStyle='#b9b2a6';rr(g,p.x-p.sw/2-3,p.y-p.sd/2-3,p.sw+6,p.sd+6,2);g.fill()}
+  // 물 구멍 (아래 3D 물이 보이도록)
+  g.globalCompositeOperation='destination-out';g.fillStyle='#000';g.fill(P.w);g.globalCompositeOperation='source-over';
   return cv}
 const clampi=v=>v<0?0:v>=TN?TN-1:v;
 
 /* ---------- 지도 ---------- */
 export let mapBg=null;
 export function buildMapBg(){mapBg=mk(TN,TN);const g=mapBg.getContext('2d'),img=g.createImageData(TN,TN),d=img.data;
-  const C={[G]:[120,200,80],[DG]:[105,184,69],[SA]:[243,223,156],[WA]:[70,196,238],[RO]:[217,198,157],[FL]:[217,182,132]};
+  const C={[G]:[111,205,70],[DG]:[92,184,58],[SA]:[243,223,156],[WA]:[60,182,232],[RO]:[91,95,104],[FL]:[217,182,132],[FA]:[180,150,70],[RK]:[181,179,157],[BR]:[168,116,60]};
   for(let i=0;i<TN*TN;i++){const c=C[S.type[i]];d[i*4]=c[0];d[i*4+1]=c[1];d[i*4+2]=c[2];d[i*4+3]=255}g.putImageData(img,0,0);
   g.fillStyle='rgba(40,110,45,.55)';for(const t of S.trees){g.beginPath();g.arc(t.x/4,t.y/4,t.r/4,0,TAU);g.fill()}
   for(const p of S.props)if(p.big){g.fillStyle='#8f8a80';g.fillRect((p.x-p.sw/2)/4,(p.y-p.sd/2)/4,p.sw/4,p.sd/4)}

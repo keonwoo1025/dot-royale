@@ -1,5 +1,5 @@
 // 도트 로얄 오프라인 캐시. 게임을 고치면 VERSION 숫자를 올려 주세요.
-const VERSION='dotroyale-v3-1';
+const VERSION='dotroyale-v4-1';
 const FILES=[
   './',
   'index.html',

@@ -9,7 +9,7 @@ function makeNoise(seed){const r=mulberry32(seed),N=128,g=new Float32Array(N*N);
 
 /* ================= 데이터 ================= */
 export const W=2400,TS=4,TN=W/TS;
-export const G=0,DG=1,SA=2,WA=3,RO=4,FL=5;
+export const G=0,DG=1,SA=2,WA=3,RO=4,FL=5,FA=6,RK=7,BR=8;
 export const WD={
   pistol:{n:'권총',ak:'9',dmg:14,rate:.25,spr:.05,sp:430,rng:240,mag:15,rl:1.2,gl:6,rar:0},
   smg:{n:'기관단총',ak:'9',dmg:9,rate:.085,spr:.11,sp:470,rng:240,mag:30,rl:1.8,gl:9,rar:0},
@@ -28,23 +28,23 @@ export const RARC=['#ffffff','#5aa0ff','#c77dff','#ffc83d'];
 export const CATC={w:'#ff9a3c',a:'#ffd84d',h:'#5de07a',ar:'#5ab0ff',bag:'#5ab0ff',mod:'#c77dff'};
 export const AMMO={'9':{n:'9mm',w:.4,drop:30,c:'#f2c230'},'556':{n:'5.56mm',w:.5,drop:30,c:'#6fd04a'},'762':{n:'7.62mm',w:.7,drop:15,c:'#ff7a3a'},'12':{n:'12게이지',w:1.25,drop:10,c:'#ff4a4a'}};
 export const HEAL={bandage:{n:'붕대',t:3,w:2,auto:10,drop:3},medkit:{n:'구급상자',t:6,w:20,auto:2,drop:1},drink:{n:'에너지 음료',t:3,w:4,auto:3,drop:1}};
-export const BAGCAP=[100,150,200,250],MODCD=[45,38,32,26];
+export const BAGCAP=[100,150,200,250],MODCD=[30,25,20,15];
 export const VEST=[0,.25,.35,.5],HELM=[0,.1,.18,.28],LVC=['','#a7bf6a','#5c8fd6','#3a3350'];
 const PREF={pistol:100,smg:80,shotgun:40,ar:130,dmr:150,sniper:160,flame:45,minigun:110,rail:170};
 const PH=[{r:950,w:45,s:35,d:.6},{r:560,w:35,s:30,d:1.5},{r:330,w:30,s:25,d:3},{r:180,w:25,s:20,d:5},{r:90,w:20,s:16,d:8},{r:35,w:15,s:12,d:12},{r:0,w:10,s:14,d:20}];
 export const CHARS={
   shadow:{n:'그림자',tag:'숨어서 한 방',c:'#9a6be6',c2:'#4b2a86',hue:275,
     pas:{n:'은신',d:'수풀 안이나 가만히 서 있으면 적이 알아채는 거리가 절반으로 줄어듭니다. 쏘면 2초간 풀립니다.'},
-    act:{n:'집중사격',d:'무기 계열에 따라 사격을 한 번 크게 다듬습니다.',near:{n:'집탄',d:'4초간 탄이 한데 모입니다'},mid:{n:'무반동',d:'4초간 반동과 탄퍼짐이 사라집니다'},far:{n:'필중',d:'다음 한 발이 조준한 적에게 반드시 명중합니다'}}},
+    act:{n:'집중사격',d:'무기 계열에 따라 사격을 한 번 크게 다듬습니다.',near:{n:'집탄',d:'4초간 탄이 모이고 피해 20% 증가'},mid:{n:'무반동',d:'4초간 탄퍼짐이 없고 피해 20% 증가'},far:{n:'필중',d:'다음 한 발이 1.5배 피해로 반드시 명중'}}},
   chrono:{n:'크로노',tag:'시간을 되돌리는 생존가',c:'#4ec3f0',c2:'#1f6f9c',hue:200,
     pas:{n:'잔상',d:'피격되면 1초간 이동속도가 30% 빨라집니다.'},
-    act:{n:'되감기',d:'3초 전 위치로 돌아가고, 그동안 잃은 체력의 절반을 되찾습니다.',near:{n:'재장전',d:'되돌아가며 탄창이 즉시 가득 찹니다'},mid:{n:'미끼',d:'원래 자리에 잔상이 남아 적의 시선을 끕니다'},far:{n:'안정',d:'되돌아간 뒤 1.5초간 조준 흔들림이 없습니다'}}},
+    act:{n:'되감기',d:'3초 전 위치로 돌아가고, 그동안 잃은 체력을 모두 되찾습니다.',near:{n:'재장전',d:'되돌아가며 탄창이 즉시 가득 찹니다'},mid:{n:'미끼',d:'원래 자리에 잔상이 남아 적의 시선을 끕니다'},far:{n:'안정',d:'되돌아간 뒤 1.5초간 조준 흔들림이 없습니다'}}},
   psy:{n:'사이킥',tag:'염력으로 막아서는 방어가',c:'#f06aa8',c2:'#8c2a5c',hue:325,
     pas:{n:'끌어당김',d:'아이템 줍는 거리가 2배입니다.'},
-    act:{n:'염력 방벽',d:'앞에 3초간 총알을 막는 방벽을 세웁니다.',near:{n:'밀치기',d:'방벽이 앞으로 밀려가며 적을 튕겨냅니다'},mid:{n:'반사',d:'막은 총알을 약하게 되돌려 보냅니다'},far:{n:'한쪽 통과',d:'내 총알만 방벽을 통과합니다'}}},
+    act:{n:'염력 방벽',d:'앞에 4초간 총알을 막는 넓은 방벽을 세웁니다.',near:{n:'밀치기',d:'방벽이 앞으로 밀려가며 적을 튕겨냅니다'},mid:{n:'반사',d:'막은 총알을 약하게 되돌려 보냅니다'},far:{n:'한쪽 통과',d:'내 총알만 방벽을 통과합니다'}}},
   volt:{n:'볼트',tag:'번개처럼 치고 빠지는 기동가',c:'#f5c83c',c2:'#b0661a',hue:45,
     pas:{n:'정전기',d:'같은 적을 연속 3번 맞히면 1.5초간 느려집니다.'},
-    act:{n:'번개 도약',d:'이동 방향으로 짧게 순간이동합니다. 벽은 넘지 못합니다.',near:{n:'감전',d:'도착 지점 주변 적이 2초간 느려집니다'},mid:{n:'과충전',d:'도약 후 3초간 연사 속도가 빨라집니다'},far:{n:'장거리',d:'도약 거리가 2배지만 0.5초간 쏠 수 없습니다'}}},
+    act:{n:'번개 도약',d:'이동 방향으로 짧게 순간이동합니다. 벽은 넘지 못합니다.',near:{n:'감전',d:'도착 지점 주변 적이 0.5초 기절 후 2초간 느려집니다'},mid:{n:'과충전',d:'도약 후 3초간 연사 속도가 빨라집니다'},far:{n:'장거리',d:'도약 거리가 2배지만 0.5초간 쏠 수 없습니다'}}},
 };
 export const CHK=Object.keys(CHARS);
 export const BOTN=['도트장인','탄약부족','풀숲요정','치킨러버','파밍왕','존버중','샷건킹','저격수김씨','뚜벅이','헤드헌터','숨바꼭질','라면한그릇','붕대장수','막타도둑','달려달려','철모맨','구급대원','수풀속','낙하산','총알받이','무한파밍','마지막생존','슬쩍','새벽세시'];
@@ -62,10 +62,11 @@ export const PROPS={
   dumpster:{w:16,d:10,h:9,m:'dumpster'},box_A:{w:6,d:6,h:5,m:'box_A'},watertower:{w:14,d:14,h:19,m:'watertower'},
   bench:{w:11,d:4,h:3,m:'bench',nocol:1},streetlight:{w:2,d:2,h:27,m:'streetlight',nocol:1},firehydrant:{w:4,d:4,h:6,m:'firehydrant',nocol:1},
   bush:{w:6,d:6,h:11,m:'bush',nocol:1},trash_A:{w:4,d:4,h:1,m:'trash_A',nocol:1},box_B:{w:4,d:4,h:5,m:'box_B',nocol:1},
+  container:{w:14,d:34,h:15,proc:1},crate:{w:8,d:8,h:8,proc:1},hay:{w:10,d:10,h:8,proc:1},sandbag:{w:24,d:6,h:6,proc:1},barrel:{w:6,d:6,h:8,proc:1},fence:{w:28,d:2,h:6,proc:1,thin:1},tent:{w:22,d:16,h:11,proc:1},
 };
 
 /* ================= 상태 ================= */
-export const S={type:null,towns:[],buildings:[],obs:[],trees:[],props:[],items:[],players:[],me:null,bullets:[],decoys:[],barriers:[],drops:[],feed:[],events:[],
+export const S={type:null,towns:[],buildings:[],obs:[],trees:[],bushes:[],pois:[],fields:[],rivers:[],roads:[],props:[],items:[],players:[],me:null,bullets:[],decoys:[],barriers:[],drops:[],feed:[],events:[],
   zone:null,plane:null,gtime:0,aliveN:0,endT:-1,over:false,won:false,autoPick:true,seed:0};
 let itemId=0;
 const ev=(e)=>S.events.push(e);
@@ -86,88 +87,136 @@ export function losClear(x0,y0,x1,y1){const d=hyp(x1-x0,y1-y0),n=Math.ceil(d/5);
 function anySolidNear(x,y,m){hQ(x-m,y-m,x+m,y+m,QB);for(const o of QB){if(o.k==='c'){if(hyp(o.x-x,o.y-y)<o.r+m)return true}else{const cx=clamp(x,o.x,o.x+o.w),cy=clamp(y,o.y,o.y+o.h);if(hyp(cx-x,cy-y)<m)return true}}return false}
 function nearBuilding(x,y,m){for(const b of S.buildings)if(x>b.x-m&&x<b.x+b.w+m&&y>b.y-m&&y<b.y+b.h+m)return true;return false}
 export function bldAt(x,y){for(const b of S.buildings)if(x>b.x&&x<b.x+b.w&&y>b.y&&y<b.y+b.h)return b;return null}
-export function inBush(p){hQ(p.x-16,p.y-16,p.x+16,p.y+16,QC);for(const o of QC)if(o.trunk&&hyp(o.x-p.x,o.y-p.y)<o.cr-3)return true;return false}
+export function inBush(p){for(const b of S.bushes){const dx=b.x-p.x,dy=b.y-p.y;if(dx*dx+dy*dy<b.r*b.r)return true}hQ(p.x-16,p.y-16,p.x+16,p.y+16,QC);for(const o of QC)if(o.trunk&&hyp(o.x-p.x,o.y-p.y)<o.cr-3)return true;return false}
 
 /* ================= 월드 생성 ================= */
 function pickW(R,arr){let s=0;for(const a of arr)s+=Math.max(0,a[1]);let v=R()*s;for(const a of arr){v-=Math.max(0,a[1]);if(v<=0)return a[0]}return arr[0][0]}
 function addItem(k,s,n,x,y,mag,block){const it={id:++itemId,k,s,n,x,y,mag:mag||0,alive:true,block:block==null?-1:block};S.items.push(it);return it}
-function spawnLoot(x,y,q,R){
-  const cat=pickW(R,[['w',26+q*12],['a',24],['h',22],['ar',14+q*6],['bag',7+q*4],['mod',7+q*5]]);
+function spawnLoot(x,y,q,R,force){
+  const cat=force||pickW(R,[['w',28+q*12],['a',24],['h',22],['ar',14+q*6],['bag',7+q*4],['mod',7+q*5]]);
   const lv=()=>R()<.66-q*.3?1:2;
-  if(cat==='w'){const k=pickW(R,[['pistol',30-q*22],['smg',22],['shotgun',19],['ar',17+q*14],['dmr',7+q*9],['sniper',2+q*4]]);addItem('w',k,0,x,y,0);const ak=WD[k].ak;addItem('a',ak,AMMO[ak].drop,x+9,y+5)}
+  if(cat==='w'){const k=pickW(R,[['pistol',30-q*22],['smg',22],['shotgun',19],['ar',17+q*14],['dmr',7+q*9],['sniper',2+q*4]]);addItem('w',k,0,x,y,0);const ak=WD[k].ak;
+    const ax=solidAt(x+10,y+5)?x:x+10,ay=solidAt(x+10,y+5)?y+8:y+5;addItem('a',ak,AMMO[ak].drop,ax,ay)}
   else if(cat==='a'){const ak=pickW(R,[['9',35],['556',30],['12',15],['762',20]]);addItem('a',ak,AMMO[ak].drop,x,y)}
   else if(cat==='h'){const hk=pickW(R,[['bandage',55],['drink',25],['medkit',20]]);addItem('h',hk,HEAL[hk].drop,x,y)}
   else if(cat==='ar')addItem('ar',R()<.5?'helm':'vest',lv(),x,y);
   else addItem(cat,'',lv(),x,y);
 }
-function placeProp(R,key,x,y,rot){const P=PROPS[key];const sw=rot%2?P.d:P.w,sd=rot%2?P.w:P.d;
+function freeSpot(x,y,m){const t=tileAt(x,y);return t!==WA&&!solidAt(x,y)&&!anySolidNear(x,y,m||4)}
+function lootNear(R,cx,cy,rad,n,q){let made=0;for(let i=0;i<n*8&&made<n;i++){const a=R()*TAU,r=R()*rad,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r;if(x<40||y<40||x>W-40||y>W-40)continue;if(!freeSpot(x,y,5)||bldAt(x,y))continue;spawnLoot(x,y,q,R);made++}return made}
+function placeProp(R,key,x,y,rot,inside){const P=PROPS[key];const sw=rot%2?P.d:P.w,sd=rot%2?P.w:P.d;
   const rx=x-sw/2,ry=y-sd/2;if(rx<30||ry<30||rx+sw>W-30||ry+sd>W-30)return false;
-  for(let yy=ry;yy<=ry+sd;yy+=4)for(let xx=rx;xx<=rx+sw;xx+=4){const t=tileAt(xx,yy);if(t===WA||t===FL)return false}
-  if(nearBuilding(x,y,Math.max(sw,sd)/2+6))return false;
-  if(!P.nocol&&anySolidNear(x,y,Math.max(sw,sd)/2+4))return false;
+  for(let yy=ry;yy<=ry+sd;yy+=4)for(let xx=rx;xx<=rx+sw;xx+=4){const t=tileAt(xx,yy);if(t===WA||t===BR||(t===FL&&!inside))return false}
+  if(!inside&&nearBuilding(x,y,Math.max(sw,sd)/2+6))return false;
+  if(!P.nocol&&anySolidNear(x,y,Math.max(sw,sd)/2+(inside?1:4)))return false;
   for(const p of S.props)if(p.big&&Math.abs(p.x-x)<(p.sw+sw)/2+10&&Math.abs(p.y-y)<(p.sd+sd)/2+10)return false;
-  const pr={key,x,y,rot,sw,sd,big:key.startsWith('building')};S.props.push(pr);
-  if(!P.nocol)addObs({k:'r',x:rx,y:ry,w:sw,h:sd,prop:pr,low:P.h<12&&!pr.big});return true}
+  const pr={key,x,y,rot,sw,sd,big:key.startsWith('building'),v:R()*1000|0};S.props.push(pr);
+  if(!P.nocol)addObs({k:'r',x:rx,y:ry,w:sw,h:sd,prop:pr,low:P.h<12&&!pr.big,thin:!!P.thin});return true}
+const WALLC=['#f2e6cc','#dfeaf2','#e3f0d8','#f6dcd6','#efe0f5','#f5ecc4'];
 export function genWorld(sd){
   S.seed=sd;const R=mulberry32(sd);itemId=0;S.type=new Uint8Array(TN*TN);const type=S.type;
-  const n1=makeNoise(sd+1),n2=makeNoise(sd+2),n3=makeNoise(sd+3);
-  const lakes=[];const nl=3+(R()*2|0);
-  for(let i=0;i<nl;i++)lakes.push({x:250+R()*(W-500),y:250+R()*(W-500),r:80+R()*120});
+  const n1=makeNoise(sd+1),n2=makeNoise(sd+2),n3=makeNoise(sd+3),n4=makeNoise(sd+4);
+  const lakes=[];const nl=2+(R()*3|0);
+  for(let i=0;i<nl;i++)lakes.push({x:250+R()*(W-500),y:250+R()*(W-500),r:70+R()*110});
   for(let ty=0;ty<TN;ty++)for(let tx=0;tx<TN;tx++){
-    const x=tx*TS+2,y=ty*TS+2,f=n1(x/90,y/90)*.7+n2(x/28,y/28)*.3;let t=f>.6?DG:G;
+    const x=tx*TS+2,y=ty*TS+2,f=n1(x/110,y/110)*.72+n2(x/30,y/30)*.28,rk=n4(x/140,y/140)*.8+n2(x/22+50,y/22)*.2;let t=G;
+    if(f>.6)t=DG;if(rk>.7)t=RK;
     for(const l of lakes){const d=hyp(x-l.x,y-l.y)/l.r+(n3(x/35,y/35)-.5)*.55;if(d<1){t=WA;break}if(d<1.16)t=SA}
     const e=Math.min(x,y,W-x,W-y)+(n3(x/50+9,y/50)-.5)*40;if(e<30)t=WA;else if(e<52)t=SA;
     type[ty*TN+tx]=t}
+  // 강
+  const carve=(x,y,r,t,only)=>{for(let ty=Math.floor((y-r)/TS);ty<=Math.floor((y+r)/TS);ty++)for(let tx=Math.floor((x-r)/TS);tx<=Math.floor((x+r)/TS);tx++){
+    if(tx<0||ty<0||tx>=TN||ty>=TN)continue;if(hyp(tx*TS+2-x,ty*TS+2-y)>r)continue;const i=ty*TN+tx;if(only&&!only.includes(type[i]))continue;type[i]=t}};
+  S.rivers=[];const nr=1+(R()<.55?1:0);
+  for(let k=0;k<nr;k++){const hor=k===0?R()<.5:!S.rivers[0].hor;const a=hor?{x:0,y:400+R()*(W-800)}:{x:400+R()*(W-800),y:0},b=hor?{x:W,y:400+R()*(W-800)}:{x:400+R()*(W-800),y:W};
+    const m1={x:a.x+(b.x-a.x)*.33+(R()-.5)*500,y:a.y+(b.y-a.y)*.33+(R()-.5)*500},m2={x:a.x+(b.x-a.x)*.66+(R()-.5)*500,y:a.y+(b.y-a.y)*.66+(R()-.5)*500};
+    S.rivers.push({hor,a,b,m1,m2});
+    for(let i=0;i<=900;i++){const t=i/900,u=1-t,x=u*u*u*a.x+3*u*u*t*m1.x+3*u*t*t*m2.x+t*t*t*b.x,y=u*u*u*a.y+3*u*u*t*m1.y+3*u*t*t*m2.y+t*t*t*b.y,w=12+n3(x/60,y/60)*8;
+      carve(x,y,w+7,SA,[G,DG,RK]);carve(x,y,w,WA)}}
   S.towns=[];
-  for(let tr=0;tr<500&&S.towns.length<9;tr++){const x=220+R()*(W-440),y=220+R()*(W-440);
-    if(S.towns.some(t=>hyp(t.x-x,t.y-y)<420))continue;
-    let wet=tileAt(x,y)===WA;for(let a=0;a<12&&!wet;a++)if(tileAt(x+Math.cos(a/12*TAU)*140,y+Math.sin(a/12*TAU)*140)===WA)wet=true;
-    if(wet)continue;S.towns.push({x,y,name:TOWN_NAMES[S.towns.length],q:S.towns.length===0?1:R()*.5})}
+  for(let tr=0;tr<800&&S.towns.length<10;tr++){const x=230+R()*(W-460),y=230+R()*(W-460);
+    if(S.towns.some(t=>hyp(t.x-x,t.y-y)<400))continue;
+    let wet=tileAt(x,y)===WA;for(let a=0;a<16&&!wet;a++)for(const rr of[70,150])if(tileAt(x+Math.cos(a/16*TAU)*rr,y+Math.sin(a/16*TAU)*rr)===WA)wet=true;
+    if(wet)continue;S.towns.push({x,y,name:TOWN_NAMES[S.towns.length],q:S.towns.length===0?1:R()*.6})}
+  // 마을 주변 흙바닥 정리 + 농장 밭
+  for(const tw of S.towns){carve(tw.x,tw.y,190,G,[DG,RK])}
+  S.fields=[];for(const tw of S.towns){if(tw.q>.9)continue;const nf=1+(R()*2|0);for(let i=0;i<nf;i++){const a=R()*TAU,d=210+R()*60,w=80+R()*60,h=60+R()*40,x=tw.x+Math.cos(a)*d-w/2,y=tw.y+Math.sin(a)*d-h/2;
+    let ok=x>60&&y>60&&x+w<W-60&&y+h<W-60;if(ok)for(let yy=y;yy<y+h&&ok;yy+=8)for(let xx=x;xx<x+w;xx+=8){const t=tileAt(xx,yy);if(t===WA||t===SA)ok=false}
+    if(!ok)continue;const hz=R()<.5;S.fields.push({x,y,w,h,hz,c:R()<.5?0:1});for(let ty=Math.floor(y/TS);ty<(y+h)/TS;ty++)for(let tx=Math.floor(x/TS);tx<(x+w)/TS;tx++)type[ty*TN+tx]=FA}}
   S.roads=[];
   const road=(a,b)=>{const mx=(a.x+b.x)/2+(R()-.5)*180,my=(a.y+b.y)/2+(R()-.5)*180,L=hyp(a.x-b.x,a.y-b.y),n=Math.ceil(L/3);S.roads.push({a,b,mx,my});
     for(let i=0;i<=n;i++){const t=i/n,u=1-t,x=u*u*a.x+2*u*t*mx+t*t*b.x,y=u*u*a.y+2*u*t*my+t*t*b.y;
-      for(let ty=Math.floor((y-8)/TS);ty<=Math.floor((y+8)/TS);ty++)for(let tx=Math.floor((x-8)/TS);tx<=Math.floor((x+8)/TS);tx++){
-        if(tx<0||ty<0||tx>=TN||ty>=TN)continue;if(hyp(tx*TS+2-x,ty*TS+2-y)<=8)type[ty*TN+tx]=RO}}};
+      for(let ty=Math.floor((y-9)/TS);ty<=Math.floor((y+9)/TS);ty++)for(let tx=Math.floor((x-9)/TS);tx<=Math.floor((x+9)/TS);tx++){
+        if(tx<0||ty<0||tx>=TN||ty>=TN)continue;if(hyp(tx*TS+2-x,ty*TS+2-y)<=9){const i=ty*TN+tx;type[i]=type[i]===WA||type[i]===BR?BR:RO}}}};
   const T=S.towns;for(let i=1;i<T.length;i++){let best=0,bd=1e9;for(let j=0;j<i;j++){const d=hyp(T[i].x-T[j].x,T[i].y-T[j].y);if(d<bd){bd=d;best=j}}road(T[i],T[best])}
-  if(T.length>3)road(T[T.length-1],T[1]);
-  S.obs=[];grid=Array.from({length:HN*HN},()=>[]);S.buildings=[];S.trees=[];S.items=[];S.props=[];
+  if(T.length>3)road(T[T.length-1],T[1]);if(T.length>6)road(T[T.length-2],T[3]);
+  S.obs=[];grid=Array.from({length:HN*HN},()=>[]);S.buildings=[];S.trees=[];S.bushes=[];S.items=[];S.props=[];S.pois=[];
   const rectHas=(x,y,w,h,ts)=>{for(let ty=Math.floor(y/TS);ty<=Math.floor((y+h)/TS);ty++)for(let tx=Math.floor(x/TS);tx<=Math.floor((x+w)/TS);tx++){if(tx<0||ty<0||tx>=TN||ty>=TN)return true;if(ts.includes(type[ty*TN+tx]))return true}return false};
+  const tryBld=(x,y,w,h,kind,tw)=>{x=Math.round(x);y=Math.round(y);w&=~3;h&=~3;if(x<60||y<60||x+w>W-60||y+h>W-60)return null;
+    if(S.buildings.some(b=>x<b.x+b.w+22&&x+w+22>b.x&&y<b.y+b.h+22&&y+h+22>b.y))return null;if(rectHas(x-4,y-4,w+8,h+8,[WA,RO,SA,BR,FA]))return null;
+    const b={x,y,w,h,tw,kind,roof:kind==='warehouse'?'#8d97a5':ROOFC[S.buildings.length%ROOFC.length],wc:kind==='warehouse'?'#b9c3cf':WALLC[(R()*WALLC.length)|0],fade:1,idx:S.buildings.length};S.buildings.push(b);return b};
   for(const tw of T){const nb=3+(R()*4|0)+(tw.q>.9?2:0);let placed=0;
-    for(let tr=0;tr<80&&placed<nb;tr++){const w=(48+R()*44)&~3,h=(44+R()*36)&~3,x=Math.round(tw.x+(R()-.5)*330-w/2),y=Math.round(tw.y+(R()-.5)*330-h/2);
-      if(x<60||y<60||x+w>W-60||y+h>W-60)continue;
-      if(S.buildings.some(b=>x<b.x+b.w+22&&x+w+22>b.x&&y<b.y+b.h+22&&y+h+22>b.y))continue;
-      if(rectHas(x-4,y-4,w+8,h+8,[WA,RO,SA]))continue;
-      S.buildings.push({x,y,w,h,tw,roof:ROOFC[S.buildings.length%ROOFC.length],fade:1,idx:S.buildings.length});placed++}}
+    if(tw.q>.9||R()<.5)for(let tr=0;tr<40;tr++){if(tryBld(tw.x+(R()-.5)*300-55,tw.y+(R()-.5)*300-38,100+R()*24,68+R()*14,'warehouse',tw))break}
+    for(let tr=0;tr<90&&placed<nb;tr++){const w=48+R()*44,h=44+R()*36;if(tryBld(tw.x+(R()-.5)*330-w/2,tw.y+(R()-.5)*330-h/2,w,h,'house',tw))placed++}}
+  // 외곽 파밍 지점
+  const POIT=['camp','containers','farm','checkpoint','wreck'];
+  for(let tr=0;tr<600&&S.pois.length<18;tr++){const x=150+R()*(W-300),y=150+R()*(W-300);
+    if(T.some(t=>hyp(t.x-x,t.y-y)<300)||S.pois.some(p=>hyp(p.x-x,p.y-y)<260))continue;if(rectHas(x-60,y-60,120,120,[WA,RO,BR]))continue;
+    const kind=POIT[S.pois.length%POIT.length];const poi={x,y,kind,q:.35+R()*.35};S.pois.push(poi);
+    if(kind==='farm'){const b=tryBld(x-18,y-16,36+R()*8,32+R()*6,'shed',{q:poi.q});if(b)b.poi=poi}
+    if(kind==='containers'){for(let i=0;i<5;i++)placeProp(R,'container',x+(i%3-1)*26+(R()-.5)*6,y+((i/3)|0)*44-20,(R()<.25?1:0))}}
   const D=18;
-  const wallH=(b,x,y,L,gap)=>{if(gap==null){addObs({k:'r',x,y,w:L,h:4,wall:1,b});return}addObs({k:'r',x,y,w:gap-D/2,h:4,wall:1,b});addObs({k:'r',x:x+gap+D/2,y,w:L-gap-D/2,h:4,wall:1,b})};
-  const wallV=(b,x,y,L,gap)=>{if(gap==null){addObs({k:'r',x,y,w:4,h:L,wall:1,b});return}addObs({k:'r',x,y,w:4,h:gap-D/2,wall:1,b});addObs({k:'r',x,y:y+gap+D/2,w:4,h:L-gap-D/2,wall:1,b})};
-  const gapPos=L=>Math.round(L/2+(R()-.5)*(L-2*D-14));
-  for(const b of S.buildings){b.doors=[];const door=(ix,iy,ox,oy)=>b.doors.push({ix,iy,ox,oy});
+  const wallH=(b,x,y,L,gap,dw)=>{dw=dw||D;if(gap==null){addObs({k:'r',x,y,w:L,h:4,wall:1,b});return}addObs({k:'r',x,y,w:gap-dw/2,h:4,wall:1,b});addObs({k:'r',x:x+gap+dw/2,y,w:L-gap-dw/2,h:4,wall:1,b})};
+  const wallV=(b,x,y,L,gap,dw)=>{dw=dw||D;if(gap==null){addObs({k:'r',x,y,w:4,h:L,wall:1,b});return}addObs({k:'r',x,y,w:4,h:gap-dw/2,wall:1,b});addObs({k:'r',x,y:y+gap+dw/2,w:4,h:L-gap-dw/2,wall:1,b})};
+  const gapPos=(L,dw)=>Math.round(L/2+(R()-.5)*(L-2*(dw||D)-14));
+  for(const b of S.buildings){b.doors=[];b.gaps=[];const door=(ix,iy,ox,oy)=>b.doors.push({ix,iy,ox,oy});
     for(let ty=b.y>>2;ty<(b.y+b.h)>>2;ty++)for(let tx=b.x>>2;tx<(b.x+b.w)>>2;tx++)type[ty*TN+tx]=FL;
-    const d1=R()*4|0,d2=R()<.55?(d1+2)%4:-1,has=s=>s===d1||s===d2;
-    const g0=has(0)?gapPos(b.w):null,g2=has(2)?gapPos(b.w):null,g3=has(3)?gapPos(b.h-8):null,g1=has(1)?gapPos(b.h-8):null;
-    wallH(b,b.x,b.y,b.w,g0);wallH(b,b.x,b.y+b.h-4,b.w,g2);wallV(b,b.x,b.y+4,b.h-8,g3);wallV(b,b.x+b.w-4,b.y+4,b.h-8,g1);
+    const dw=b.kind==='warehouse'?28:D;let d1=R()*4|0,d2=R()<.55?(d1+2)%4:-1;if(b.kind==='warehouse'){d1=b.w>=b.h?0:1;d2=d1+2}
+    const has=s=>s===d1||s===d2;
+    const g0=has(0)?gapPos(b.w,dw):null,g2=has(2)?gapPos(b.w,dw):null,g3=has(3)?gapPos(b.h-8,dw):null,g1=has(1)?gapPos(b.h-8,dw):null;
+    wallH(b,b.x,b.y,b.w,g0,dw);wallH(b,b.x,b.y+b.h-4,b.w,g2,dw);wallV(b,b.x,b.y+4,b.h-8,g3,dw);wallV(b,b.x+b.w-4,b.y+4,b.h-8,g1,dw);
     if(g0!=null)door(b.x+g0,b.y+10,b.x+g0,b.y-10);if(g2!=null)door(b.x+g2,b.y+b.h-10,b.x+g2,b.y+b.h+10);
     if(g3!=null)door(b.x+10,b.y+4+g3,b.x-10,b.y+4+g3);if(g1!=null)door(b.x+b.w-10,b.y+4+g1,b.x+b.w+10,b.y+4+g1);
-    if(b.w>=80&&R()<.8)wallV(b,b.x+(b.w>>1)-2,b.y+4,b.h-8,gapPos(b.h-8))}
+    b.dw=dw;
+    if(b.kind==='house'&&b.w>=80&&R()<.8)wallV(b,b.x+(b.w>>1)-2,b.y+4,b.h-8,gapPos(b.h-8))
+    if(b.kind==='warehouse'){for(let i=0;i<4;i++){const x=b.x+16+R()*(b.w-32),y=b.y+16+R()*(b.h-32);placeProp(R,R()<.6?'crate':'barrel',x,y,R()*4|0,true)}}}
+  // POI 소품
+  for(const poi of S.pois){const{x,y}=poi;const P=(k,dx,dy,rot)=>placeProp(R,k,x+dx,y+dy,rot);
+    if(poi.kind==='camp'){P('tent',-26,-10,0);P('tent',24,-14,1);P('tent',0,26,0);P('crate',-6,-4,0);P('barrel',10,6,0);P('crate',-30,22,1)}
+    else if(poi.kind==='farm'){for(let i=0;i<5;i++)P('hay',-50+R()*100,30+R()*30,0);for(let i=0;i<4;i++)P('fence',-60+i*28,-40,0);P('fence',60,-20,1);P('barrel',30,-10,0)}
+    else if(poi.kind==='checkpoint'){P('sandbag',0,-24,0);P('sandbag',0,24,0);P('sandbag',-24,0,1);P('sandbag',24,0,1);P('barrel',-36,-30,0);P('barrel',-30,-36,0);P('car_police',44,10,0);P('crate',36,-34,0)}
+    else if(poi.kind==='wreck'){P('car_sedan',-20,0,1);P('car_hatchback',22,-14,0);P('car_stationwagon',8,26,1);P('barrel',-4,-26,0);P('barrel',2,-30,0)}
+    else if(poi.kind==='containers'){P('crate',-40,30,0);P('barrel',40,-30,0)}}
   // 도시 소품: 마을 외곽 큰 건물, 차, 쓰레기통 등
   const BK=['building_A','building_B','building_C','building_D','building_E','building_F','building_G','building_H'];
   for(const tw of T){let n=0;for(let tr=0;tr<60&&n<3;tr++){const a=R()*TAU,d=150+R()*110;if(placeProp(R,BK[R()*8|0],Math.round(tw.x+Math.cos(a)*d),Math.round(tw.y+Math.sin(a)*d),R()*4|0))n++}
-    let m=0;for(let tr=0;tr<60&&m<7;tr++){const a=R()*TAU,d=40+R()*200,k=pickW(R,[['car_sedan',3],['car_taxi',2],['car_police',tw.q>.9?4:1],['car_hatchback',2],['car_stationwagon',2],['dumpster',3],['box_A',3],['watertower',tw.q>.9?1:.5]]);
+    let m=0;for(let tr=0;tr<80&&m<10;tr++){const a=R()*TAU,d=40+R()*200,k=pickW(R,[['car_sedan',3],['car_taxi',2],['car_police',tw.q>.9?4:1],['car_hatchback',2],['car_stationwagon',2],['dumpster',3],['crate',3],['barrel',3],['container',tw.q>.9?3:1],['sandbag',tw.q>.9?4:.5],['watertower',tw.q>.9?1:.5]]);
       if(placeProp(R,k,Math.round(tw.x+Math.cos(a)*d),Math.round(tw.y+Math.sin(a)*d),R()*4|0))m++}
-    for(let i=0;i<10;i++){const a=R()*TAU,d=30+R()*220;placeProp(R,pickW(R,[['bench',2],['streetlight',3],['firehydrant',1],['bush',4],['trash_A',2],['box_B',2]]),Math.round(tw.x+Math.cos(a)*d),Math.round(tw.y+Math.sin(a)*d),R()*4|0)}}
-  for(const r of S.roads){for(let i=1;i<8;i++){if(R()<.5)continue;const t=i/8,u=1-t,x=u*u*r.a.x+2*u*t*r.mx+t*t*r.b.x,y=u*u*r.a.y+2*u*t*r.my+t*t*r.b.y;
+    for(let i=0;i<14;i++){const a=R()*TAU,d=30+R()*220;placeProp(R,pickW(R,[['bench',2],['streetlight',3],['firehydrant',1],['bush',3],['trash_A',2],['box_B',2],['fence',2]]),Math.round(tw.x+Math.cos(a)*d),Math.round(tw.y+Math.sin(a)*d),R()*4|0)}}
+  for(const r of S.roads){for(let i=1;i<10;i++){if(R()<.45)continue;const t=i/10,u=1-t,x=u*u*r.a.x+2*u*t*r.mx+t*t*r.b.x,y=u*u*r.a.y+2*u*t*r.my+t*t*r.b.y;
     const dx=2*u*(r.mx-r.a.x)+2*t*(r.b.x-r.mx),dy=2*u*(r.my-r.a.y)+2*t*(r.b.y-r.my),L=hyp(dx,dy)||1,nx=-dy/L,ny=dx/L,s=R()<.5?1:-1;
-    if(R()<.35)placeProp(R,pickW(R,[['car_sedan',2],['car_hatchback',2],['car_stationwagon',1]]),Math.round(x+nx*s*18),Math.round(y+ny*s*18),Math.abs(dx)>Math.abs(dy)?1:0);
-    else placeProp(R,'streetlight',Math.round(x+nx*s*14),Math.round(y+ny*s*14),0)}}
-  for(let i=0;i<240;i++){const x=R()*W,y=R()*W,r=5+(R()*6|0),t=tileAt(x,y);
-    if(t===WA||t===RO||t===FL||nearBuilding(x,y,r+12)||anySolidNear(x,y,r+4))continue;addObs({k:'c',x,y,r,rock:1,v:R()*100|0})}
-  for(let i=0;i<3400&&S.trees.length<900;i++){const x=R()*W,y=R()*W,t=tileAt(x,y);
-    if(t!==G&&t!==DG)continue;if(t===G&&R()<.62)continue;if(nearBuilding(x,y,18)||anySolidNear(x,y,11))continue;
-    const cr=[10,12,14][R()*3|0];const o={k:'c',x,y,r:2.6,trunk:1,cr,ti:S.trees.length};addObs(o);S.trees.push({x,y,r:cr,v:R()*2|0,rot:R()*TAU})}
-  for(const b of S.buildings){const n=2+(R()*3|0)+(b.tw.q>.9?2:0);
-    for(let i=0;i<n;i++){const x=b.x+10+R()*(b.w-20),y=b.y+10+R()*(b.h-20);if(!solidAt(x,y)&&!anySolidNear(x,y,4))spawnLoot(x,y,b.tw.q,R)}}
-  for(let i=0;i<280;i++){const x=60+R()*(W-120),y=60+R()*(W-120),t=tileAt(x,y);if(t===WA||solidAt(x,y)||anySolidNear(x,y,5))continue;if(R()<.55)spawnLoot(x,y,0,R)}
+    if(R()<.35)placeProp(R,pickW(R,[['car_sedan',2],['car_hatchback',2],['car_stationwagon',1],['barrel',1]]),Math.round(x+nx*s*20),Math.round(y+ny*s*20),Math.abs(dx)>Math.abs(dy)?1:0);
+    else placeProp(R,'streetlight',Math.round(x+nx*s*15),Math.round(y+ny*s*15),0)}}
+  // 들판 엄폐물(외딴 건초, 드럼통, 바위)
+  for(let i=0;i<70;i++){const x=80+R()*(W-160),y=80+R()*(W-160),t=tileAt(x,y);if(t===FA)placeProp(R,'hay',x,y,0);else if(t===G&&R()<.5)placeProp(R,R()<.5?'hay':'barrel',x,y,0)}
+  for(let i=0;i<520;i++){const x=R()*W,y=R()*W,t=tileAt(x,y);if(t===WA||t===RO||t===FL||t===BR||t===FA)continue;if(t!==RK&&R()<.6)continue;const r=5+(R()*(t===RK?10:6)|0);
+    if(nearBuilding(x,y,r+12)||anySolidNear(x,y,r+4))continue;addObs({k:'c',x,y,r,rock:1,v:R()*100|0})}
+  for(let i=0;i<6000&&S.trees.length<1100;i++){const x=R()*W,y=R()*W,t=tileAt(x,y);
+    if(t!==G&&t!==DG&&t!==RK)continue;if(t===G&&R()<.72)continue;if(t===RK&&R()<.75)continue;if(nearBuilding(x,y,18)||anySolidNear(x,y,11))continue;
+    const pine=t===DG?R()<.7:t===RK?R()<.8:R()<.15;
+    const cr=pine?[9,11,13][R()*3|0]:[10,12,14][R()*3|0];const o={k:'c',x,y,r:2.6,trunk:1,cr,ti:S.trees.length};addObs(o);S.trees.push({x,y,r:cr,v:R()*2|0,rot:R()*TAU,pine})}
+  for(let i=0;i<5000&&S.bushes.length<900;i++){const x=R()*W,y=R()*W,t=tileAt(x,y);if(t!==G&&t!==DG)continue;if(t===G&&R()<.5)continue;if(nearBuilding(x,y,10)||anySolidNear(x,y,6))continue;
+    S.bushes.push({x,y,r:6+R()*4,rot:R()*TAU})}
+  // 파밍: 건물 → 외곽 지점 → 들판 → 칸별 최소 보장
+  for(const b of S.buildings){const q=b.tw?b.tw.q:.4;const n=b.kind==='warehouse'?5+(R()*3|0):b.kind==='shed'?2+(R()*2|0):2+(R()*3|0)+(q>.9?2:0);
+    for(let i=0;i<n;i++){for(let k=0;k<6;k++){const x=b.x+10+R()*(b.w-20),y=b.y+10+R()*(b.h-20);if(!solidAt(x,y)&&!anySolidNear(x,y,4)){spawnLoot(x,y,q,R);break}}}}
+  for(const poi of S.pois)lootNear(R,poi.x,poi.y,55,poi.kind==='farm'?2:4+(R()*2|0),poi.q);
+  for(let i=0;i<140;i++){const x=60+R()*(W-120),y=60+R()*(W-120);if(!freeSpot(x,y,5))continue;spawnLoot(x,y,0,R)}
+  const CS=240,CN=W/CS,cnt=new Array(CN*CN).fill(0),wcnt=new Array(CN*CN).fill(0);
+  for(const it of S.items){const i=((it.y/CS)|0)*CN+((it.x/CS)|0);cnt[i]++;if(it.k==='w')wcnt[i]++}
+  for(let cy=0;cy<CN;cy++)for(let cx=0;cx<CN;cx++){const i=cy*CN+cx;let land=0;for(let k=0;k<16;k++){const t=tileAt(cx*CS+R()*CS,cy*CS+R()*CS);if(t!==WA)land++}if(land<5)continue;
+    let tries=0;while((wcnt[i]<1||cnt[i]<4)&&tries<60){tries++;const x=cx*CS+20+R()*(CS-40),y=cy*CS+20+R()*(CS-40);if(x<50||y<50||x>W-50||y>W-50||!freeSpot(x,y,5))continue;
+      const before=S.items.length;spawnLoot(x,y,.15,R,wcnt[i]<1?'w':null);if(wcnt[i]<1)wcnt[i]++;cnt[i]+=S.items.length-before}}
 }
 
 /* ================= 경기 시작/비행기 ================= */
@@ -175,7 +224,7 @@ function makePlayer(id,name,bot,ch){
   return{id,name,x:0,y:0,z:ALT,ph:'plane',r:6,hp:100,boost:0,alive:true,bot,ch,ang:Math.random()*TAU,w:[null,null],cur:2,
     ammo:{'9':0,'556':0,'762':0,'12':0},heal:{bandage:0,medkit:0,drink:0},helm:0,vest:0,bag:0,mod:0,kills:0,
     cd:0,rl:0,healT:0,healK:null,sw:0,flash:0,hitT:0,punch:0,deathT:0,provoked:0,skillCD:12,buff:{},slowT:0,stillT:0,revealT:0,
-    hist:[],histT:0,voltTgt:null,voltN:0,mdx:0,mdy:0,moving:false,opening:null,openT:0,charge:0,spin:0,firingT:0,shotT:0,skillT:0,landT:0,
+    hist:[],histT:0,stunT:0,voltTgt:null,voltN:0,mdx:0,mdy:0,moving:false,opening:null,openT:0,charge:0,spin:0,firingT:0,shotT:0,skillT:0,landT:0,
     thinkT:Math.random()*.3,tgt:null,tgtVis:false,lostT:0,react:0,err:0,sdir:Math.random()<.5?1:-1,mvx:0,mvy:0,
     goal:null,wp:null,wpT:0,unstick:0,uang:0,stuckT:0,lx:0,ly:0,skill:.3+Math.random()*.7,aggr:90+Math.random()*60,in:{},blinkDir:null,jumpAt:1,dest:null}}
 export function startMatch(myChar){
@@ -296,16 +345,16 @@ function useSkill(p){
   if(!p.alive||p.skillCD>0)return false;const f=famOf(p);if(!f){if(p===S.me)toast('무기를 들어야 스킬을 쓸 수 있습니다');return false}
   const w=curW(p);
   if(p.ch==='shadow'){if(f==='near')p.buff.tight=4;else if(f==='mid')p.buff.steady=4;else p.buff.sure=5;ev({t:'ring',x:p.x,y:p.y,r:16,c:CHARS.shadow.c})}
-  else if(p.ch==='chrono'){const h=p.hist[0]||{x:p.x,y:p.y,hp:p.hp},ox=p.x,oy=p.y;p.hp=Math.min(100,p.hp+Math.max(0,h.hp-p.hp)*.5);p.x=h.x;p.y=h.y;p.hist=[];p.opening=null;
+  else if(p.ch==='chrono'){const h=p.hist[0]||{x:p.x,y:p.y,hp:p.hp},ox=p.x,oy=p.y;p.hp=Math.min(100,p.hp+Math.max(0,h.hp-p.hp));p.x=h.x;p.y=h.y;p.hist=[];p.opening=null;
     ev({t:'trail',x1:ox,y1:oy,x2:p.x,y2:p.y,c:CHARS.chrono.c});ev({t:'ring',x:p.x,y:p.y,r:18,c:CHARS.chrono.c});
     if(f==='near'){const d=WD[w.k];if(!d.special){const take=Math.min(d.mag-w.mag,p.ammo[d.ak]);w.mag+=take;p.ammo[d.ak]-=take;p.rl=0}}
     else if(f==='mid'){const dc={id:'d'+Math.random(),x:ox,y:oy,hp:40,t:3,owner:p,ang:p.ang,ch:p.ch,w:w.k,alive:true,decoy:true,r:6,helm:p.helm,bag:p.bag};S.decoys.push(dc)}
     else p.buff.steady=1.5}
-  else if(p.ch==='psy'){const nx=Math.cos(p.ang),ny=Math.sin(p.ang);S.barriers.push({id:Math.random(),x:p.x+nx*15,y:p.y+ny*15,nx,ny,len:36,t:3,max:3,owner:p,fam:f,v:f==='near'?42:0})}
+  else if(p.ch==='psy'){const nx=Math.cos(p.ang),ny=Math.sin(p.ang);S.barriers.push({id:Math.random(),x:p.x+nx*15,y:p.y+ny*15,nx,ny,len:47,t:4,max:4,owner:p,fam:f,v:f==='near'?42:0})}
   else if(p.ch==='volt'){let dx,dy;if(p.blinkDir!=null){dx=Math.cos(p.blinkDir);dy=Math.sin(p.blinkDir);p.blinkDir=null}else if(p.moving){dx=p.mdx;dy=p.mdy}else{dx=Math.cos(p.ang);dy=Math.sin(p.ang)}
-    const dist=f==='far'?110:58;let tx=p.x,ty=p.y;for(let s=2;s<=dist;s+=2){const nx=p.x+dx*s,ny=p.y+dy*s;if(nx<10||ny<10||nx>W-10||ny>W-10||anySolidR(nx,ny,p.r-.5))break;tx=nx;ty=ny}
+    const dist=f==='far'?154:81;let tx=p.x,ty=p.y;for(let s=2;s<=dist;s+=2){const nx=p.x+dx*s,ny=p.y+dy*s;if(nx<10||ny<10||nx>W-10||ny>W-10||anySolidR(nx,ny,p.r-.5))break;tx=nx;ty=ny}
     ev({t:'bolt',x1:p.x,y1:p.y,x2:tx,y2:ty,c:CHARS.volt.c});p.x=tx;p.y=ty;ev({t:'ring',x:tx,y:ty,r:f==='near'?34:16,c:CHARS.volt.c});
-    if(f==='near')for(const q of S.players)if(q!==p&&q.alive&&q.ph==='ground'&&hyp(q.x-tx,q.y-ty)<34)q.slowT=2;
+    if(f==='near')for(const q of S.players)if(q!==p&&q.alive&&q.ph==='ground'&&hyp(q.x-tx,q.y-ty)<38){q.slowT=2.5;q.stunT=.5;ev({t:'stun',p:q})}
     if(f==='mid')p.buff.over=3;if(f==='far')p.buff.nofire=.5}
   p.skillCD=MODCD[p.mod];p.skillT=.5;ev({t:'skill',p});return true}
 
@@ -316,7 +365,7 @@ export function applyInput(p,inp,dt){
   if(inp.reload)startReload(p);
   if(inp.skill)useSkill(p);
   if(inp.open){const d=nearDrop(p);if(d&&!p.opening){p.opening=d;p.openT=3;cancelHeal(p)}}
-  let mx=inp.mx,my=inp.my;const m=hyp(mx,my);if(m>1){mx/=m;my/=m}
+  let mx=inp.mx,my=inp.my;if(p.stunT>0){p.stunT-=dt;mx=my=0;inp.fire=false}const m=hyp(mx,my);if(m>1){mx/=m;my/=m}
   p.moving=m>.1;if(p.moving){const mm=hyp(mx,my)||1;p.mdx=mx/mm;p.mdy=my/mm;p.stillT=0}else p.stillT+=dt;
   const w=curW(p);
   let sp=62;if(p.healT>0)sp*=.45;if(tileAt(p.x,p.y)===WA)sp*=.55;if(p.boost>50)sp*=1.08;if(p.slowT>0)sp*=.6;if(p.buff.haste>0)sp*=1.3;
@@ -350,11 +399,11 @@ function fire(p,w){const d=WD[w.k];w.mag--;p.revealT=2;p.shotT=.18;p.firingT=.25
   const[mx,my]=muzzle(p,d);
   if(p.buff.sure>0&&FAM[w.k]==='far'){p.buff.sure=0;let best=null,ba=.35;
     for(const q of[...S.players,...S.decoys]){if(q===p||!q.alive||q.owner===p||(q.ph&&q.ph!=='ground'))continue;const dd=hyp(q.x-p.x,q.y-p.y);if(dd>d.rng)continue;const da=Math.abs(angDiff(Math.atan2(q.y-p.y,q.x-p.x),p.ang));if(da<ba&&losClear(p.x,p.y,q.x,q.y)){ba=da;best=q}}
-    if(best){ev({t:'beam',x1:mx,y1:my,x2:best.x,y2:best.y,c:CHARS.shadow.c});if(best.decoy)hitDecoy(best,d.dmg);else hurt(best,d.dmg,p,w.k);ev({t:'shot',k:w.k,x:p.x,y:p.y,p});return}}
+    if(best){ev({t:'beam',x1:mx,y1:my,x2:best.x,y2:best.y,c:CHARS.shadow.c});if(best.decoy)hitDecoy(best,d.dmg*1.5);else hurt(best,d.dmg*1.5,p,w.k);ev({t:'shot',k:w.k,x:p.x,y:p.y,p});return}}
   let spr=d.spr*(p.moving?1.35:1)*(p.bot?1.25:1);if(p.buff.tight>0)spr*=.3;if(p.buff.steady>0)spr=0;
   const n=d.pel||1;
   for(let i=0;i<n;i++){const a=p.ang+(Math.random()-.5)*2*spr,L=d.rng*(.9+Math.random()*.2);
-    S.bullets.push({x:mx,y:my,px:mx,py:my,vx:Math.cos(a)*d.sp,vy:Math.sin(a)*d.sp,dmg:d.dmg,own:p,left:L,max:L,k:w.k,refl:false,flame:w.k==='flame',pierce:w.k==='rail',hitSet:w.k==='rail'?new Set():null})}
+    S.bullets.push({x:mx,y:my,px:mx,py:my,vx:Math.cos(a)*d.sp,vy:Math.sin(a)*d.sp,dmg:d.dmg*((p.buff.tight>0||p.buff.steady>0)&&p.ch==='shadow'?1.2:1),own:p,left:L,max:L,k:w.k,refl:false,flame:w.k==='flame',pierce:w.k==='rail',hitSet:w.k==='rail'?new Set():null})}
   ev({t:'shot',k:w.k,x:p.x,y:p.y,p})}
 function punch(p){p.cd=.45;p.punch=.25;const fx=p.x+Math.cos(p.ang)*(p.r+5),fy=p.y+Math.sin(p.ang)*(p.r+5);
   for(const q of S.players){if(q===p||!q.alive||q.ph!=='ground')continue;if(hyp(q.x-fx,q.y-fy)<q.r+4){hurt(q,9,p,'fist');break}}ev({t:'shot',k:'fist',x:p.x,y:p.y,p})}
@@ -478,7 +527,7 @@ function updBullets(dt){const B=S.bullets;
         if(br.fam==='mid'&&b.own!==br.owner&&!b.refl){const dot=b.vx*br.nx+b.vy*br.ny;b.vx-=2*dot*br.nx;b.vy-=2*dot*br.ny;b.own=br.owner;b.dmg*=.45;b.refl=true;b.left=Math.max(b.left,140);const sg=Math.sign(-s0||1);b.x=ix+br.nx*sg*1.5;b.y=iy+br.ny*sg*1.5;ev({t:'spark',x:ix,y:iy,c:CHARS.psy.c});break}
         dead=true;ev({t:'spark',x:ix,y:iy,c:CHARS.psy.c});break}
       if(dead)break;
-      const o=solidAt(b.x,b.y);if(o&&!(b.pierce&&o.trunk)&&!(o.low&&!b.flame&&Math.random()<.0)){dead=true;if(!b.flame)ev({t:'spark',x:ox,y:oy,c:o.trunk?'#8a5a2a':o.wall?'#e8d9b8':o.drop?'#9ab':o.prop?'#c9d0da':'#dfe3ea'});break}
+      const o=solidAt(b.x,b.y);if(o&&!(b.pierce&&o.trunk)&&!o.thin){dead=true;if(!b.flame)ev({t:'spark',x:ox,y:oy,c:o.trunk?'#8a5a2a':o.wall?'#e8d9b8':o.drop?'#9ab':o.prop?'#c9d0da':'#dfe3ea'});break}
       for(const p of S.players){if(!p.alive||p===b.own||p.ph!=='ground')continue;if(b.hitSet&&b.hitSet.has(p))continue;const dx=p.x-b.x,dy=p.y-b.y;if(dx*dx+dy*dy<(p.r+2)*(p.r+2)){
         const dmg=b.k==='shotgun'?b.dmg*(.45+.55*b.left/b.max):b.dmg;hurt(p,dmg,b.own,b.k);if(b.hitSet){b.hitSet.add(p)}else{dead=true}break}}
       if(dead)break;
