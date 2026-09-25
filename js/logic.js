@@ -266,7 +266,7 @@ function makePlayer(id,name,bot,ch){
     hist:[],histT:0,voltTgt:null,voltN:0,mdx:0,mdy:0,moving:false,opening:null,openT:0,charge:0,spin:0,firingT:0,shotT:0,skillT:0,landT:0,stepT:0,
     thinkT:Math.random()*.3,tgt:null,tgtVis:false,lostT:0,react:0,err:0,errZ:0,sdir:Math.random()<.5?1:-1,mvx:0,mvy:0,
     goal:null,wp:null,wpT:0,unstick:0,uang:0,stuckT:0,lx:0,ly:0,skill:.3+Math.random()*.7,aggr:55+Math.random()*50,in:{},blinkDir:null,jumpAt:1,dest:null}}
-export function startMatch(myChar){
+export function startMatch(myChar){S.mode='br';
   S.players=[];S.bullets=[];S.decoys=[];S.barriers=[];S.fields2=[];S.stops=[];S.drops=[];S.feed=[];S.events=[];S.gtime=0;S.endT=-1;S.over=false;S.won=false;
   for(const d of S.doors)if(d.b.kind!=='warehouse'){d.open=false;d.dead=false}
   const a=Math.random()*TAU,off=(Math.random()-.5)*380,cx=W/2+Math.cos(a+Math.PI/2)*off,cy=W/2+Math.sin(a+Math.PI/2)*off,L=W*.95;
@@ -283,6 +283,17 @@ export function startMatch(myChar){
   const flight=(pl.tOut-pl.t)*pl.len/pl.sp;
   S.zone={cx:W/2,cy:W/2,r:W*.76,phase:-1,state:'wait',t:0,tx:W/2,ty:W/2,tr:W*.76,sx:0,sy:0,sr:0,d:.4};nextZone();S.zone.t+=flight+10;
   updPlane(0)}
+export function startTraining(myChar){startMatch(myChar);S.mode='train';S.plane.done=true;const me=S.me;
+  const t=S.towns[0];let bx=t.x,by=t.y;for(let i=0;i<200;i++){const x=t.x+(Math.random()-.5)*60,y=t.y+(Math.random()-.5)*60;if(!solidAt(x,y)&&!anySolidNear(x,y,3)&&!bldAt(x,y)&&tileAt(x,y)!==WA){bx=x;by=y;break}}
+  me.ph='ground';me.x=bx;me.y=by;me.z=groundH(bx,by);me.w=[{k:'ar',mag:30},{k:'sniper',mag:5}];me.cur=0;me.ammo={'9':60,'556':120,'762':40,'12':24};me.heal={bandage:5,medkit:1,drink:2};me.helm=2;me.vest=2;me.bag=3;me.mod=3;me.skillCD=0;me.ang=-Math.PI/2;
+  const dums=S.players.slice(1,9);S.players=[me,...dums];
+  dums.forEach((d,i)=>{const dist=[7,11,16,22,30,45,60,85][i],off=(i%2?1:-1)*(1.5+i*1.2);d.dummy=true;d.ph='ground';d.bx=clamp(bx+off,20,W-20);d.by=clamp(by-dist,20,W-20);d.x=d.bx;d.y=d.by;d.z=groundH(d.x,d.y);d.amp=i%3===1?3:0;d.name='과녁 '+(i+1);d.hp=100;d.w=[null,null];d.helm=i>=5?2:0;d.ang=Math.PI/2});
+  // 무기 진열대
+  const ks=Object.keys(WD);ks.forEach((k,i)=>{const x=bx-6+i*1.5,y=by+4;addItem('w',k,0,x,y,WD[k].special?WD[k].mag:WD[k].mag);if(WD[k].ak)addItem('a',WD[k].ak,60,x,y+1)});
+  S.zone={cx:W/2,cy:W/2,r:1e5,phase:9,state:'done',t:0,tx:W/2,ty:W/2,tr:1e5,sx:0,sy:0,sr:0,d:0};S.aliveN=S.players.length}
+function updDummy(p,dt){if(!p.alive){p.respT-=dt;if(p.respT<=0){p.alive=true;p.hp=100;p.x=p.bx;p.y=p.by;p.z=groundH(p.x,p.y);p.stunT=0;p.slowT=0}return}
+  const me=S.me;if(p.amp){const nx=p.bx+Math.sin(S.gtime*.9+p.id)*p.amp;p.moving=Math.abs(nx-p.x)>.001;p.mdx=Math.sign(nx-p.x)||1;p.mdy=0;p.curSp=Math.abs(nx-p.x)/dt;p.x=nx;p.z=groundH(p.x,p.y)}
+  p.ang=Math.atan2(me.y-p.y,me.x-p.x);for(const k of['stunT','slowT','hitT','flash','landT'])if(p[k]>0)p[k]-=dt;for(const k in p.buff)if(p.buff[k]>0)p.buff[k]-=dt;if(p.hitT<=0&&p.hp<100)p.hp=Math.min(100,p.hp+dt*20)}
 function updPlane(dt){const pl=S.plane;if(pl.done)return;pl.t+=dt*pl.sp/pl.len;pl.x=pl.x0+(pl.x1-pl.x0)*pl.t;pl.y=pl.y0+(pl.y1-pl.y0)*pl.t;
   for(const p of S.players){if(p.ph!=='plane')continue;p.x=pl.x;p.y=pl.y;p.z=ALT;
     if(p.bot&&pl.t>=p.jumpAt)jump(p);else if(pl.t>=pl.tOut)jump(p)}
@@ -376,6 +387,7 @@ function finishReload(p){const w=curW(p);if(!w)return;const d=WD[w.k];if(d.speci
 function canUse(p,k){if(k==='bandage')return p.hp<75;if(k==='medkit')return p.hp<100;return p.boost<100}
 function cancelHeal(p){p.healT=0;p.healK=null}
 function finishHeal(p){const k=p.healK;if(!k)return;p.heal[k]--;if(k==='bandage')p.hp=Math.max(p.hp,Math.min(75,p.hp+15));else if(k==='medkit')p.hp=100;else p.boost=Math.min(100,p.boost+45);p.healK=null;if(p===S.me)ev({t:'sfx',k:'heal'})}
+export function isTrain(){return S.mode==='train'}
 export function stealthed(p){if(p.buff.invis>0)return true;return p.ch==='shadow'&&p.revealT<=0&&(p.stillT>.6||inBush(p))}
 export function invisible(p){return p.buff.invis>0}
 function useSkill(p){
@@ -399,7 +411,7 @@ function useSkill(p){
       for(const q of L){if(n>=3)break;n++;ev({t:'bolt',x1:px,y1:py,z1:pz,x2:q.x,y2:q.y,z2:q.z,c:C.c});px=q.x;py=q.y;pz=q.z;hurt(q,20,p,'skill');q.stunT=Math.max(q.stunT,.5);ev({t:'stun',p:q})}}
     if(f==='mid')S.fields2.push({id:Math.random(),x:tx,y:ty,z:p.z,r:4,t:4,max:4,owner:p,acc:0});
     if(f==='far')p.buff.nofire=.5}
-  p.skillCD=MODCD[p.mod];p.skillT=.6;ev({t:'skill',p,f});return true}
+  p.skillCD=S.mode==='train'?4:MODCD[p.mod];p.skillT=.6;ev({t:'skill',p,f});return true}
 
 export function applyInput(p,inp,dt){
   if(inp.sw!=null&&inp.sw!==p.cur&&(inp.sw===2||p.w[inp.sw])){p.cur=inp.sw;p.sw=.35;p.rl=0;p.charge=0;cancelHeal(p);if(p===S.me)ev({t:'sfx',k:'equip'})}
@@ -479,7 +491,8 @@ export function hurt(t,dmg,src,wk,zoneDmg,head){if(!t.alive)return;
   if(wk==='flame')t.slowT=Math.max(t.slowT,.5);
   if(t.bot&&src&&src!==t&&src.alive){t.provoked=4;if(!t.tgt||!t.tgtVis){t.tgt=src;t.react=.25;t.lostT=0}}
   if(t.hp<=0)kill(t,src,wk,head)}
-function kill(t,src,wk,head){t.alive=false;t.hp=0;t.deathT=S.gtime;ev({t:'die',p:t,src,head});
+function kill(t,src,wk,head){if(t.dummy){t.alive=false;t.hp=0;t.deathT=S.gtime;t.respT=2.5;ev({t:'die',p:t,src,head});if(src&&src!==t){src.kills++;src.multiN=(src.multiT>S.gtime?(src.multiN||0):0)+1;src.multiT=S.gtime+8}feedPush((src?src.name:'')+' → '+t.name+(head?' (헤드)':''),true);if(src===S.me)ev({t:'kill',n:src.multiN});return}
+  t.alive=false;t.hp=0;t.deathT=S.gtime;ev({t:'die',p:t,src,head});
   const drop=[];for(const w of t.w)if(w)drop.push(['w',w.k,0,w.mag]);
   for(const k in t.ammo)if(t.ammo[k]>0)drop.push(['a',k,t.ammo[k]]);for(const k in t.heal)if(t.heal[k]>0)drop.push(['h',k,t.heal[k]]);
   if(t.helm)drop.push(['ar','helm',t.helm]);if(t.vest)drop.push(['ar','vest',t.vest]);if(t.bag)drop.push(['bag','',t.bag]);if(t.mod)drop.push(['mod','',t.mod]);
@@ -563,8 +576,8 @@ export function step(dt,human){
   S.gtime+=dt;const me=S.me;
   if(!S.plane.done)updPlane(dt);
   if(human&&human.jumpPlane&&me.ph==='plane')jump(me);
-  updZone(dt);updDrops(dt);
-  for(const p of S.players){if(!p.alive)continue;
+  if(S.mode!=='train'){updZone(dt);updDrops(dt)}
+  for(const p of S.players){if(p.dummy){updDummy(p,dt);continue}if(!p.alive)continue;
     if(p.ph==='plane')continue;
     if(p.ph==='fall'||p.ph==='chute'){updAir(p,p===me?human:{mx:0,my:0},dt);continue}
     if(p===me){applyInput(p,human,dt);autoPickup(p)}
